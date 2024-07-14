@@ -3,7 +3,7 @@ import gleam/option.{None, Some}
 import gleam/string
 import gleam/string_builder
 import gleeunit
-import gpxb.{type Gpx, Gpx, Link, Metadata, Person}
+import gpxb.{type Gpx, Coordinate, Gpx, Link, Metadata, Person, Time, Waypoint}
 
 pub fn main() {
   gleeunit.main()
@@ -57,4 +57,36 @@ pub fn author_test() {
   )
   |> snapshot
   |> birdie.snap("author")
+}
+
+pub fn waypoints_test() {
+  Gpx(
+    metadata: None,
+    waypoints: [
+      Waypoint(
+        coordinate: Coordinate(latitude: 0.5, longitude: -4.5),
+        name: Some("wp-name"),
+        description: Some("wp-desc"),
+        time: Some(Time(
+          year: 2024,
+          month: 1,
+          day: 5,
+          hour: 12,
+          minute: 14,
+          second: 55,
+          millisecond: 455,
+        )),
+      ),
+      Waypoint(
+        coordinate: Coordinate(latitude: 50.5, longitude: -34.55),
+        name: None,
+        description: None,
+        time: None,
+      ),
+    ],
+    routes: [],
+    tracks: [],
+  )
+  |> snapshot
+  |> birdie.snap("waypoints")
 }

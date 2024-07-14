@@ -1,0 +1,9 @@
+---
+version: 1.1.8
+title: waypoints
+file: ./test/gpxb_test.gleam
+test_name: waypoints_test
+---
+Gpx(None, [Waypoint(Coordinate(0.5, -4.5), Some("wp-name"), Some("wp-desc"), Some(Time(2024, 1, 5, 12, 14, 55, 455))), Waypoint(Coordinate(50.5, -34.55), None, None, None)], [], [])
+
+<?xml version="1.0" encoding="UTF-8"?><gpx version="1.1" creator="gleam-gpxb" xmlns="http://www.topografix.com/GPX/1/1"><wpt latitude="0.5" longitude="-4.5"><name>wp-name</name><desc>wp-desc</desc></wpt><wpt latitude="50.5" longitude="-34.55" /></gpx>

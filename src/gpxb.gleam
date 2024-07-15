@@ -1,6 +1,8 @@
 import gleam/float
+import gleam/int
 import gleam/list
 import gleam/option.{type Option, None, Some}
+import gleam/string
 import gleam/string_builder.{type StringBuilder}
 import xmb.{type Xml, text, x}
 
@@ -8,7 +10,7 @@ pub type Gpx {
   Gpx(
     metadata: Option(Metadata),
     waypoints: List(Waypoint),
-    routes: List(Nil),
+    routes: List(Route),
     tracks: List(Nil),
   )
 }
@@ -34,6 +36,19 @@ pub type Waypoint {
     description: Option(String),
     /// Creation/modification timestamp for element. 
     time: Option(Time),
+  )
+}
+
+/// An ordered list of waypoints representing a series of turn points leading
+/// to a destination. 
+pub type Route {
+  Route(
+    name: Option(String),
+    description: Option(String),
+    /// Links to external information about the route.
+    links: List(Link),
+    /// The points of the route
+    waypoints: List(Waypoint),
   )
 }
 
@@ -78,7 +93,7 @@ pub type Link {
 
 pub fn render(gpx: Gpx) -> StringBuilder {
   let children =
-    [list.map(gpx.waypoints, waypoint)]
+    [list.map(gpx.waypoints, waypoint("wpt", _)), list.map(gpx.routes, route)]
     |> list.concat
     |> map_push(gpx.metadata, fn(metadata) {
       []
@@ -133,15 +148,54 @@ fn link(link: Link) -> Xml {
   )
 }
 
-fn waypoint(waypoint: Waypoint) -> Xml {
+fn waypoint(tag: String, waypoint: Waypoint) -> Xml {
   x(
-    "wpt",
+    tag,
     [
       #("latitude", float.to_string(waypoint.coordinate.latitude)),
       #("longitude", float.to_string(waypoint.coordinate.longitude)),
     ],
     []
+      |> map_push(waypoint.time, time)
       |> map_push(waypoint.description, text_elem("desc", _))
       |> map_push(waypoint.name, text_elem("name", _)),
+  )
+}
+
+fn time(time: Time) -> Xml {
+  let i = fn(i: Int) { i |> int.to_string |> string.pad_left(2, "0") }
+  let timestamp =
+    i(time.year)
+    <> "-"
+    <> i(time.month)
+    <> "-"
+    <> i(time.day)
+    <> "T"
+    <> i(time.hour)
+    <> ":"
+    <> i(time.minute)
+    <> ":"
+    <> i(time.second)
+    <> "."
+    <> string.pad_left(int.to_string(time.millisecond % 1000), 4, "0")
+    <> "Z"
+  x("time", [], [text(timestamp)])
+}
+
+fn route(route: Route) -> Xml {
+  // name: Option(String),
+  // description: Option(String),
+  // links: List(Link),
+  // waypoints: List(Waypoint),
+  x(
+    "rte",
+    [],
+    [
+      list.map(route.links, link),
+      list.map(route.waypoints, waypoint("rtept", _)),
+    ]
+      |> list.concat
+      |> map_push(route.description, text_elem("desc", _))
+      |> map_push(route.name, text_elem("name", _)),
   )
 }

@@ -6,4 +6,18 @@ test_name: author_test
 ---
 Gpx(Some(Metadata(Some("the name"), Some("really cool"), Some(Person(Some("Lucy"), Some("lucy@example.com"), Some(Link("https://example.com", Some("link text"), Some("link type"))))))), [], [], [])
 
-<?xml version="1.0" encoding="UTF-8"?><gpx version="1.1" creator="gleam-gpxb" xmlns="http://www.topografix.com/GPX/1/1"><metadata><name>the name</name><desc>really cool</desc><author><name>Lucy</name><email>lucy@example.com</email><link href="https://example.com"><text>link text</text><type>link type</type></link></author></metadata></gpx>
+<?xml version="1.0" encoding="UTF-8"?>
+<gpx version="1.1" creator="gleam-gpxb" xmlns="http://www.topografix.com/GPX/1/1">
+<metadata>
+<name>the name</name>
+<desc>really cool</desc>
+<author>
+<name>Lucy</name>
+<email>lucy@example.com</email>
+<link href="https://example.com">
+<text>link text</text>
+<type>link type</type>
+</link>
+</author>
+</metadata>
+</gpx>

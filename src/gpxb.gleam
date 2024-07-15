@@ -11,7 +11,7 @@ pub type Gpx {
     metadata: Option(Metadata),
     waypoints: List(Waypoint),
     routes: List(Route),
-    tracks: List(Nil),
+    tracks: List(Track),
   )
 }
 
@@ -39,17 +39,42 @@ pub type Waypoint {
   )
 }
 
-/// An ordered list of waypoints representing a series of turn points leading
-/// to a destination. 
+/// An ordered series of waypoints representing a suggested series of turn points
+/// leading to a destination. 
 pub type Route {
   Route(
     name: Option(String),
     description: Option(String),
+    /// Source of data. Included to give user some idea of reliability and
+    /// accuracy of data.
+    source: Option(String),
     /// Links to external information about the route.
     links: List(Link),
     /// The points of the route
     waypoints: List(Waypoint),
   )
+}
+
+/// An ordered series of points describing a path that has been taken.
+pub type Track {
+  Track(
+    name: Option(String),
+    description: Option(String),
+    /// Source of data. Included to give user some idea of reliability and
+    /// accuracy of data.
+    source: Option(String),
+    /// Links to external information about the route.
+    links: List(Link),
+    segments: List(TrackSegment),
+  )
+}
+
+/// A Track Segment holds a list of Track Points which are logically connected
+/// in order. To represent a single GPS track where GPS reception was lost, or
+/// the GPS receiver was turned off, start a new `TrackSegment` for each
+/// continuous span of track data.
+pub type TrackSegment {
+  TrackSegment(waypoints: List(Waypoint))
 }
 
 /// Date and time in are in Univeral Coordinated Time (UTC), not local time!
@@ -93,7 +118,11 @@ pub type Link {
 
 pub fn render(gpx: Gpx) -> StringBuilder {
   let children =
-    [list.map(gpx.waypoints, waypoint("wpt", _)), list.map(gpx.routes, route)]
+    [
+      list.map(gpx.waypoints, waypoint("wpt", _)),
+      list.map(gpx.routes, route),
+      list.map(gpx.tracks, track),
+    ]
     |> list.concat
     |> map_push(gpx.metadata, fn(metadata) {
       []
@@ -183,10 +212,6 @@ fn time(time: Time) -> Xml {
 }
 
 fn route(route: Route) -> Xml {
-  // name: Option(String),
-  // description: Option(String),
-  // links: List(Link),
-  // waypoints: List(Waypoint),
   x(
     "rte",
     [],
@@ -195,7 +220,24 @@ fn route(route: Route) -> Xml {
       list.map(route.waypoints, waypoint("rtept", _)),
     ]
       |> list.concat
+      |> map_push(route.source, text_elem("src", _))
       |> map_push(route.description, text_elem("desc", _))
       |> map_push(route.name, text_elem("name", _)),
   )
+}
+
+fn track(track: Track) -> Xml {
+  x(
+    "trk",
+    [],
+    [list.map(track.links, link), list.map(track.segments, track_segment)]
+      |> list.concat
+      |> map_push(track.source, text_elem("src", _))
+      |> map_push(track.description, text_elem("desc", _))
+      |> map_push(track.name, text_elem("name", _)),
+  )
+}
+
+fn track_segment(segment: TrackSegment) -> Xml {
+  x("trkseg", [], list.map(segment.waypoints, waypoint("trkpt", _)))
 }

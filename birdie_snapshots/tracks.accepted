@@ -1,0 +1,36 @@
+---
+version: 1.1.8
+title: tracks
+file: ./test/gpxb_test.gleam
+test_name: tracks_test
+---
+Gpx(None, [], [], [Track(Some("track1-name"), Some("track1-desc"), Some("i made it up"), [Link("https://example.com/1", Some("link text"), Some("link type")), Link("https://example.com/2", Some("link text 2"), Some("link type 2"))], [TrackSegment([Waypoint(Coordinate(0.5, -4.5), Some("wp-name"), Some("wp-desc"), Some(Time(2024, 1, 5, 12, 14, 55, 1))), Waypoint(Coordinate(50.5, -34.55), None, None, None)]), TrackSegment([Waypoint(Coordinate(1.5, -4.5), None, None, None), Waypoint(Coordinate(2.5, -34.55), None, None, None)])])])
+
+<?xml version="1.0" encoding="UTF-8"?>
+<gpx version="1.1" creator="gleam-gpxb" xmlns="http://www.topografix.com/GPX/1/1">
+<trk>
+<name>track1-name</name>
+<desc>track1-desc</desc>
+<src>i made it up</src>
+<link href="https://example.com/1">
+<text>link text</text>
+<type>link type</type>
+</link>
+<link href="https://example.com/2">
+<text>link text 2</text>
+<type>link type 2</type>
+</link>
+<trkseg>
+<trkpt latitude="0.5" longitude="-4.5">
+<name>wp-name</name>
+<desc>wp-desc</desc>
+<time>2024-01-05T12:14:55.0001Z</time>
+</trkpt>
+<trkpt latitude="50.5" longitude="-34.55" />
+</trkseg>
+<trkseg>
+<trkpt latitude="1.5" longitude="-4.5" />
+<trkpt latitude="2.5" longitude="-34.55" />
+</trkseg>
+</trk>
+</gpx>

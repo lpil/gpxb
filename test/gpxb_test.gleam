@@ -4,7 +4,8 @@ import gleam/string
 import gleam/string_builder
 import gleeunit
 import gpxb.{
-  type Gpx, Coordinate, Gpx, Link, Metadata, Person, Route, Time, Waypoint,
+  type Gpx, Coordinate, Gpx, Link, Metadata, Person, Route, Time, Track,
+  TrackSegment, Waypoint,
 }
 
 pub fn main() {
@@ -102,7 +103,7 @@ pub fn routes_test() {
     metadata: None,
     waypoints: [],
     routes: [
-      Route(name: None, description: None, links: [], waypoints: [
+      Route(name: None, description: None, source: None, links: [], waypoints: [
         Waypoint(
           coordinate: Coordinate(latitude: 1.5, longitude: -1.55),
           name: None,
@@ -113,6 +114,7 @@ pub fn routes_test() {
       Route(
         name: Some("route1-name"),
         description: Some("route1-desc"),
+        source: Some("i made it up"),
         links: [
           Link(
             href: "https://example.com/1",
@@ -153,4 +155,66 @@ pub fn routes_test() {
   )
   |> snapshot
   |> birdie.snap("routes")
+}
+
+pub fn tracks_test() {
+  Gpx(metadata: None, waypoints: [], routes: [], tracks: [
+    Track(
+      name: Some("track1-name"),
+      description: Some("track1-desc"),
+      source: Some("i made it up"),
+      links: [
+        Link(
+          href: "https://example.com/1",
+          text: Some("link text"),
+          type_: Some("link type"),
+        ),
+        Link(
+          href: "https://example.com/2",
+          text: Some("link text 2"),
+          type_: Some("link type 2"),
+        ),
+      ],
+      segments: [
+        TrackSegment([
+          Waypoint(
+            coordinate: Coordinate(latitude: 0.5, longitude: -4.5),
+            name: Some("wp-name"),
+            description: Some("wp-desc"),
+            time: Some(Time(
+              year: 2024,
+              month: 1,
+              day: 5,
+              hour: 12,
+              minute: 14,
+              second: 55,
+              millisecond: 1,
+            )),
+          ),
+          Waypoint(
+            coordinate: Coordinate(latitude: 50.5, longitude: -34.55),
+            name: None,
+            description: None,
+            time: None,
+          ),
+        ]),
+        TrackSegment([
+          Waypoint(
+            coordinate: Coordinate(latitude: 1.5, longitude: -4.5),
+            name: None,
+            description: None,
+            time: None,
+          ),
+          Waypoint(
+            coordinate: Coordinate(latitude: 2.5, longitude: -34.55),
+            name: None,
+            description: None,
+            time: None,
+          ),
+        ]),
+      ],
+    ),
+  ])
+  |> snapshot
+  |> birdie.snap("tracks")
 }

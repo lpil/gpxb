@@ -4,7 +4,7 @@ title: routes
 file: ./test/gpxb_test.gleam
 test_name: routes_test
 ---
-Gpx(None, [], [Route(None, None, [], [Waypoint(Coordinate(1.5, -1.55), None, None, None)]), Route(Some("route1-name"), Some("route1-desc"), [Link("https://example.com/1", Some("route1 link text"), Some("route1 link type")), Link("https://example.com/2", Some("route1 link text 2"), Some("route1 link type 2"))], [Waypoint(Coordinate(0.5, -4.5), Some("wp-name"), Some("wp-desc"), Some(Time(2024, 1, 5, 12, 14, 55, 1))), Waypoint(Coordinate(50.5, -34.55), None, None, None)])], [])
+Gpx(None, [], [Route(None, None, None, [], [Waypoint(Coordinate(1.5, -1.55), None, None, None)]), Route(Some("route1-name"), Some("route1-desc"), Some("i made it up"), [Link("https://example.com/1", Some("route1 link text"), Some("route1 link type")), Link("https://example.com/2", Some("route1 link text 2"), Some("route1 link type 2"))], [Waypoint(Coordinate(0.5, -4.5), Some("wp-name"), Some("wp-desc"), Some(Time(2024, 1, 5, 12, 14, 55, 1))), Waypoint(Coordinate(50.5, -34.55), None, None, None)])], [])
 
 <?xml version="1.0" encoding="UTF-8"?>
 <gpx version="1.1" creator="gleam-gpxb" xmlns="http://www.topografix.com/GPX/1/1">
@@ -14,6 +14,7 @@ Gpx(None, [], [Route(None, None, [], [Waypoint(Coordinate(1.5, -1.55), None, Non
 <rte>
 <name>route1-name</name>
 <desc>route1-desc</desc>
+<src>i made it up</src>
 <link href="https://example.com/1">
 <text>route1 link text</text>
 <type>route1 link type</type>

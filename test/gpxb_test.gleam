@@ -1,7 +1,7 @@
 import birdie
 import gleam/option.{None, Some}
 import gleam/string
-import gleam/string_builder
+import gleam/string_tree
 import gleeunit
 import gpxb.{
   type Gpx, Coordinate, Gpx, Link, Metadata, Person, Route, Time, Track,
@@ -17,7 +17,7 @@ fn snapshot(gpx: Gpx) -> String {
   let output =
     gpx
     |> gpxb.render
-    |> string_builder.to_string
+    |> string_tree.to_string
     |> string.replace("><", ">\n<")
   input <> "\n\n" <> output
 }

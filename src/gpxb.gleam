@@ -3,7 +3,7 @@ import gleam/int
 import gleam/list
 import gleam/option.{type Option, None, Some}
 import gleam/string
-import gleam/string_builder.{type StringBuilder}
+import gleam/string_tree.{type StringTree}
 import xmb.{type Xml, text, x}
 
 pub type Gpx {
@@ -116,14 +116,14 @@ pub type Link {
   Link(href: String, text: Option(String), type_: Option(String))
 }
 
-pub fn render(gpx: Gpx) -> StringBuilder {
+pub fn render(gpx: Gpx) -> StringTree {
   let children =
     [
       list.map(gpx.waypoints, waypoint("wpt", _)),
       list.map(gpx.routes, route),
       list.map(gpx.tracks, track),
     ]
-    |> list.concat
+    |> list.flatten
     |> map_push(gpx.metadata, fn(metadata) {
       []
       |> map_push(metadata.author, person("author", _))
@@ -192,7 +192,7 @@ fn waypoint(tag: String, waypoint: Waypoint) -> Xml {
 }
 
 fn time(time: Time) -> Xml {
-  let i = fn(i: Int) { i |> int.to_string |> string.pad_left(2, "0") }
+  let i = fn(i: Int) { i |> int.to_string |> string.pad_start(2, "0") }
   let timestamp =
     i(time.year)
     <> "-"
@@ -206,7 +206,7 @@ fn time(time: Time) -> Xml {
     <> ":"
     <> i(time.second)
     <> "."
-    <> string.pad_left(int.to_string(time.millisecond % 1000), 4, "0")
+    <> string.pad_start(int.to_string(time.millisecond % 1000), 4, "0")
     <> "Z"
   x("time", [], [text(timestamp)])
 }
@@ -219,7 +219,7 @@ fn route(route: Route) -> Xml {
       list.map(route.links, link),
       list.map(route.waypoints, waypoint("rtept", _)),
     ]
-      |> list.concat
+      |> list.flatten
       |> map_push(route.source, text_elem("src", _))
       |> map_push(route.description, text_elem("desc", _))
       |> map_push(route.name, text_elem("name", _)),
@@ -231,7 +231,7 @@ fn track(track: Track) -> Xml {
     "trk",
     [],
     [list.map(track.links, link), list.map(track.segments, track_segment)]
-      |> list.concat
+      |> list.flatten
       |> map_push(track.source, text_elem("src", _))
       |> map_push(track.description, text_elem("desc", _))
       |> map_push(track.name, text_elem("name", _)),
